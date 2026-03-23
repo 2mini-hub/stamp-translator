@@ -8,121 +8,64 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background: #ffffff;
-    min-height: 100vh;
-    padding: 40px 16px;
-  }
+  body { font-family: 'Noto Sans KR', sans-serif; background: #fff; min-height: 100vh; padding: 40px 16px; }
   h1 { text-align: center; color: #222; font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
   .subtitle { text-align: center; color: #999; font-size: 0.85rem; margin-bottom: 36px; }
   .upload-area {
-    border: 2px dashed #ddd;
-    border-radius: 16px;
-    padding: 40px 32px;
-    text-align: center;
-    background: #fafafa;
-    cursor: pointer;
-    max-width: 600px;
-    margin: 0 auto 24px;
-    transition: all 0.2s;
+    border: 2px dashed #ddd; border-radius: 16px; padding: 40px 32px;
+    text-align: center; background: #fafafa; cursor: pointer;
+    max-width: 600px; margin: 0 auto 24px; transition: all 0.2s;
   }
   .upload-area:hover { background: #f5f5f5; border-color: #bbb; }
   .upload-area p { color: #aaa; font-size: 0.9rem; margin-top: 8px; }
   .grid-input {
-    max-width: 600px;
-    margin: 0 auto 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #fafafa;
-    border: 1.5px solid #eee;
-    border-radius: 12px;
-    padding: 16px 20px;
+    max-width: 600px; margin: 0 auto 20px; display: flex;
+    align-items: center; gap: 12px; background: #fafafa;
+    border: 1.5px solid #eee; border-radius: 12px; padding: 16px 20px;
   }
   .grid-input label { color: #555; font-size: 0.9rem; white-space: nowrap; }
   .grid-input input {
-    width: 64px;
-    padding: 8px 10px;
-    border: 1.5px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    text-align: center;
-    outline: none;
+    width: 64px; padding: 8px 10px; border: 1.5px solid #ddd;
+    border-radius: 8px; font-size: 1rem; text-align: center; outline: none;
     font-family: 'Noto Sans KR', sans-serif;
   }
   .grid-input input:focus { border-color: #888; }
   .grid-input span { color: #aaa; font-size: 0.85rem; }
   .btn {
-    display: block;
-    margin: 0 auto 12px;
-    padding: 14px 32px;
-    background: #222;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-family: 'Noto Sans KR', sans-serif;
-    cursor: pointer;
-    max-width: 600px;
-    width: 100%;
-    transition: background 0.2s;
+    display: block; margin: 0 auto 12px; padding: 14px 32px;
+    background: #222; color: white; border: none; border-radius: 12px;
+    font-size: 1rem; font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer; max-width: 600px; width: 100%; transition: background 0.2s;
   }
   .btn:hover { background: #444; }
   .btn:disabled { background: #ddd; color: #aaa; cursor: not-allowed; }
   .status { text-align: center; color: #666; font-size: 0.9rem; margin: 12px 0; min-height: 20px; }
-  .results-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    max-width: 1200px;
-    margin: 32px auto 0;
+  .result-wrap {
+    max-width: 900px; margin: 32px auto 0; text-align: center;
   }
-  .result-card {
-    background: white;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-    width: 320px;
+  .result-wrap canvas {
+    max-width: 100%; border-radius: 12px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
   }
-  .result-card canvas { width: 100%; display: block; }
-  .card-actions { padding: 10px 12px; }
-  .btn-download {
-    width: 100%;
-    padding: 9px;
-    border-radius: 8px;
-    border: none;
-    font-size: 0.85rem;
-    font-family: 'Noto Sans KR', sans-serif;
-    cursor: pointer;
-    background: #222;
-    color: white;
-    transition: background 0.2s;
+  .bottom-btns {
+    max-width: 600px; margin: 24px auto 40px;
+    display: flex; flex-direction: column; gap: 10px;
   }
-  .btn-download:hover { background: #444; }
+  .btn-save {
+    padding: 14px 32px; background: #1565c0; color: white; border: none;
+    border-radius: 12px; font-size: 1rem; font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer; width: 100%; transition: background 0.2s;
+  }
+  .btn-save:hover { background: #0d47a1; }
   .excel-btn {
-    display: block;
-    margin: 24px auto 40px;
-    padding: 14px 32px;
-    background: #2e7d32;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-family: 'Noto Sans KR', sans-serif;
-    cursor: pointer;
-    max-width: 600px;
-    width: 100%;
-    transition: background 0.2s;
+    padding: 14px 32px; background: #2e7d32; color: white; border: none;
+    border-radius: 12px; font-size: 1rem; font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer; width: 100%; transition: background 0.2s;
   }
   .excel-btn:hover { background: #1b5e20; }
   #preview-img {
-    max-width: 100%;
-    max-height: 180px;
-    display: block;
-    margin: 12px auto 0;
-    border-radius: 8px;
+    max-width: 100%; max-height: 180px; display: block;
+    margin: 12px auto 0; border-radius: 8px;
   }
 </style>
 </head>
@@ -144,25 +87,26 @@
   <input type="number" id="colCount" value="4" min="1" max="10">
   <span>열</span>
   <input type="number" id="rowCount" value="6" min="1" max="20">
-  <span>행 &nbsp;→&nbsp; 총 <span id="totalCount">24</span>개</span>
+  <span>행 → 총 <span id="totalCount">24</span>개</span>
 </div>
 
-<button class="btn" id="translateBtn" onclick="startTranslation()" disabled>
-  번역 시작
-</button>
-
+<button class="btn" id="translateBtn" onclick="startTranslation()" disabled>번역 시작</button>
 <div class="status" id="status"></div>
-<div class="results-grid" id="resultsGrid"></div>
-<button class="excel-btn" id="excelBtn" onclick="downloadExcel()" style="display:none">
-  📊 엑셀로 번역 목록 다운로드
-</button>
+
+<div class="result-wrap" id="resultWrap" style="display:none">
+  <canvas id="mergedCanvas"></canvas>
+</div>
+
+<div class="bottom-btns" id="bottomBtns" style="display:none">
+  <button class="btn-save" onclick="downloadMerged()">🖼️ 통합 이미지 저장</button>
+  <button class="excel-btn" onclick="downloadExcel()">📊 엑셀로 번역 목록 다운로드</button>
+</div>
 
 <script>
 const WORKER_URL = "https://stamp-translator-api.90521.workers.dev";
-let loadedFiles = [];
 let translationData = [];
+let mergedCanvas = null;
 
-// 총 개수 실시간 업데이트
 document.getElementById('colCount').addEventListener('input', updateTotal);
 document.getElementById('rowCount').addEventListener('input', updateTotal);
 function updateTotal() {
@@ -177,52 +121,48 @@ dropZone.addEventListener('click', () => fileInput.click());
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.background = '#f5f5f5'; });
 dropZone.addEventListener('dragleave', () => dropZone.style.background = '#fafafa');
 dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.style.background = '#fafafa';
+  e.preventDefault(); dropZone.style.background = '#fafafa';
   handleFiles(Array.from(e.dataTransfer.files));
 });
 fileInput.addEventListener('change', e => handleFiles(Array.from(e.target.files)));
 
 function handleFiles(files) {
-  loadedFiles = files.filter(f => f.type.startsWith('image/'));
-  if (loadedFiles.length > 0) {
-    setStatus(`${loadedFiles.length}개 이미지 로드됨`);
+  const imgs = files.filter(f => f.type.startsWith('image/'));
+  if (imgs.length > 0) {
+    window._loadedFiles = imgs;
+    setStatus(`${imgs.length}개 이미지 로드됨`);
     document.getElementById('translateBtn').disabled = false;
-    if (loadedFiles.length === 1) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = document.getElementById('preview-img');
-        img.src = e.target.result;
-        img.style.display = 'block';
-      };
-      reader.readAsDataURL(loadedFiles[0]);
-    }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('preview-img');
+      img.src = e.target.result; img.style.display = 'block';
+    };
+    reader.readAsDataURL(imgs[0]);
   }
 }
 
 async function startTranslation() {
-  if (loadedFiles.length === 0) return;
+  const files = window._loadedFiles;
+  if (!files || files.length === 0) return;
   const cols = parseInt(document.getElementById('colCount').value) || 4;
   const rows = parseInt(document.getElementById('rowCount').value) || 6;
 
   document.getElementById('translateBtn').disabled = true;
-  document.getElementById('resultsGrid').innerHTML = '';
+  document.getElementById('resultWrap').style.display = 'none';
+  document.getElementById('bottomBtns').style.display = 'none';
   translationData = [];
 
-  for (let i = 0; i < loadedFiles.length; i++) {
-    setStatus(`이미지 분할 중...`);
-    await processImage(loadedFiles[i], cols, rows);
-  }
-
-  setStatus('✅ 번역 완료!');
-  if (translationData.length > 0) document.getElementById('excelBtn').style.display = 'block';
-  document.getElementById('translateBtn').disabled = false;
-}
-
-async function processImage(file, cols, rows) {
+  const file = files[0];
   const img = await loadImage(file);
-  const cellW = img.width / cols;
-  const cellH = img.height / rows;
+  const cellW = Math.floor(img.width / cols);
+  const cellH = Math.floor(img.height / rows);
+
+  // 결과 합성 캔버스 (원본 크기)
+  const output = document.getElementById('mergedCanvas');
+  output.width = img.width;
+  output.height = img.height;
+  const outCtx = output.getContext('2d');
+  outCtx.drawImage(img, 0, 0); // 원본 먼저 그리기
 
   let stampIndex = 0;
   for (let r = 0; r < rows; r++) {
@@ -230,97 +170,113 @@ async function processImage(file, cols, rows) {
       stampIndex++;
       setStatus(`번역 중... (${stampIndex}/${cols * rows})`);
 
-      // 스탬프 개별 캔버스로 잘라내기
+      // 셀 잘라내기
       const cellCanvas = document.createElement('canvas');
       cellCanvas.width = cellW;
       cellCanvas.height = cellH;
       const cellCtx = cellCanvas.getContext('2d');
       cellCtx.drawImage(img, c * cellW, r * cellH, cellW, cellH, 0, 0, cellW, cellH);
 
-      const base64 = cellCanvas.toDataURL('image/png').split(',')[1];
+      // 전처리: 대비 강화
+      const processed = preprocessImage(cellCanvas);
+      const base64 = processed.toDataURL('image/png').split(',')[1];
 
-      // OCR (DOCUMENT_TEXT_DETECTION: 손글씨 인식률 향상)
+      // OCR
       let fullText = '';
-      let annotations = [];
       try {
         const ocrRes = await fetch(`${WORKER_URL}/ocr`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ imageBase64: base64 }),
         });
         const ocrData = await ocrRes.json();
-        annotations = ocrData.responses?.[0]?.textAnnotations || [];
+        const annotations = ocrData.responses?.[0]?.textAnnotations || [];
         fullText = annotations[0]?.description?.replace(/\n/g, '').trim() || '';
-      } catch (e) {
-        console.error('OCR 오류', e);
-      }
+      } catch (e) { console.error('OCR 오류', e); }
 
+      // 번역
       let korean = '';
       if (fullText) {
         try {
           const transRes = await fetch(`${WORKER_URL}/translate`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ texts: [fullText] }),
           });
           const transData = await transRes.json();
           korean = transData.data?.translations?.[0]?.translatedText || '';
-        } catch (e) {
-          console.error('번역 오류', e);
-        }
+        } catch (e) { console.error('번역 오류', e); }
       }
 
-      // 엑셀 데이터
-      translationData.push({
-        번호: stampIndex,
-        일본어: fullText || '(텍스트 없음)',
-        한국어: korean || '(번역 없음)',
-      });
+      translationData.push({ 번호: stampIndex, 일본어: fullText || '(텍스트 없음)', 한국어: korean || '' });
 
-      // 원본 셀 캔버스에 번역 텍스트 오버레이
+      // 원본 합성 캔버스 위에 번역 텍스트 오버레이
       if (korean) {
+        const offsetX = c * cellW;
+        const offsetY = r * cellH;
         const fontSize = Math.max(cellW * 0.07, 13);
-        cellCtx.font = `bold ${fontSize}px 'Noto Sans KR', sans-serif`;
-        cellCtx.lineJoin = 'round';
-        cellCtx.lineWidth = fontSize * 0.35;
-        cellCtx.strokeStyle = 'white';
-        cellCtx.fillStyle = 'red';
+        outCtx.font = `bold ${fontSize}px 'Noto Sans KR', sans-serif`;
+        outCtx.lineJoin = 'round';
+        outCtx.lineWidth = fontSize * 0.35;
+        outCtx.strokeStyle = 'white';
+        outCtx.fillStyle = 'red';
 
-        // 텍스트 자동 줄바꿈 (셀 너비 초과 시)
-        const maxWidth = cellW - 10;
-        const lines = wrapText(cellCtx, korean, maxWidth, fontSize);
+        const lines = wrapText(outCtx, korean, cellW - 10, fontSize);
         lines.forEach((line, li) => {
-          const y = fontSize + li * (fontSize + 2) + 4;
-          cellCtx.strokeText(line, 5, y);
-          cellCtx.fillText(line, 5, y);
+          const x = offsetX + 5;
+          const y = offsetY + fontSize + li * (fontSize + 2) + 4;
+          outCtx.strokeText(line, x, y);
+          outCtx.fillText(line, x, y);
         });
       }
 
-      renderCard(cellCanvas, stampIndex);
-      await new Promise(r => setTimeout(r, 100)); // API 과부하 방지
+      await new Promise(r => setTimeout(r, 100));
     }
   }
+
+  // 결과 표시
+  document.getElementById('resultWrap').style.display = 'block';
+  document.getElementById('bottomBtns').style.display = 'flex';
+  setStatus('✅ 번역 완료!');
+  document.getElementById('translateBtn').disabled = false;
+}
+
+// 이미지 전처리: 대비 강화 + 선명도 향상
+function preprocessImage(canvas) {
+  const w = canvas.width;
+  const h = canvas.height;
+  const out = document.createElement('canvas');
+  out.width = w; out.height = h;
+  const ctx = out.getContext('2d');
+
+  // 2배 업스케일 (작은 텍스트 인식률 향상)
+  const scaled = document.createElement('canvas');
+  scaled.width = w * 2; scaled.height = h * 2;
+  const sCtx = scaled.getContext('2d');
+  sCtx.imageSmoothingEnabled = false;
+  sCtx.drawImage(canvas, 0, 0, w * 2, h * 2);
+
+  // 대비 강화 필터
+  sCtx.filter = 'contrast(1.4) brightness(1.05)';
+  sCtx.drawImage(scaled, 0, 0);
+  sCtx.filter = 'none';
+
+  return scaled;
 }
 
 function wrapText(ctx, text, maxWidth, fontSize) {
-  const words = text.split('');
-  const lines = [];
-  let line = '';
-  for (let w of words) {
-    const test = line + w;
+  const chars = text.split('');
+  const lines = []; let line = '';
+  for (let ch of chars) {
+    const test = line + ch;
     if (ctx.measureText(test).width > maxWidth && line) {
-      lines.push(line);
-      line = w;
-    } else {
-      line = test;
-    }
+      lines.push(line); line = ch;
+    } else { line = test; }
   }
   if (line) lines.push(line);
   return lines;
 }
 
 function loadImage(file) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const img = new Image();
     const url = URL.createObjectURL(file);
     img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
@@ -328,31 +284,12 @@ function loadImage(file) {
   });
 }
 
-function renderCard(canvas, index) {
-  const grid = document.getElementById('resultsGrid');
-  const card = document.createElement('div');
-  card.className = 'result-card';
-
-  const label = document.createElement('div');
-  label.style.cssText = 'text-align:center; padding:8px 0 4px; font-size:0.8rem; color:#aaa;';
-  label.textContent = `#${index}`;
-  card.appendChild(label);
-  card.appendChild(canvas);
-
-  const actions = document.createElement('div');
-  actions.className = 'card-actions';
-  const dlBtn = document.createElement('button');
-  dlBtn.className = 'btn-download';
-  dlBtn.textContent = '⬇️ 이미지 저장';
-  dlBtn.onclick = () => {
-    const a = document.createElement('a');
-    a.download = `stamp_${index}.png`;
-    a.href = canvas.toDataURL('image/png');
-    a.click();
-  };
-  actions.appendChild(dlBtn);
-  card.appendChild(actions);
-  grid.appendChild(card);
+function downloadMerged() {
+  const canvas = document.getElementById('mergedCanvas');
+  const a = document.createElement('a');
+  a.download = 'stamp_translated_all.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
 }
 
 function downloadExcel() {
@@ -363,9 +300,7 @@ function downloadExcel() {
   XLSX.writeFile(wb, 'stamp_translations.xlsx');
 }
 
-function setStatus(msg) {
-  document.getElementById('status').textContent = msg;
-}
+function setStatus(msg) { document.getElementById('status').textContent = msg; }
 </script>
 </body>
 </html>
