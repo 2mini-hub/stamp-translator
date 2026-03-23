@@ -3,151 +3,127 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>스탬프 번역기 🌸</title>
+<title>스탬프 번역기📝</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-    background: #fff5f7;
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #ffffff;
     min-height: 100vh;
-    padding: 24px 16px;
+    padding: 40px 16px;
   }
   h1 {
     text-align: center;
-    color: #e05c7a;
+    color: #222;
     font-size: 1.6rem;
+    font-weight: 700;
     margin-bottom: 8px;
+    letter-spacing: -0.5px;
   }
   .subtitle {
     text-align: center;
     color: #999;
     font-size: 0.85rem;
-    margin-bottom: 28px;
+    margin-bottom: 36px;
   }
   .upload-area {
-    border: 2px dashed #f0a0b0;
+    border: 2px dashed #ddd;
     border-radius: 16px;
-    padding: 32px;
+    padding: 40px 32px;
     text-align: center;
-    background: white;
+    background: #fafafa;
     cursor: pointer;
-    max-width: 600px;
-    margin: 0 auto 16px;
-    transition: background 0.2s;
-  }
-  .upload-area:hover { background: #fff0f3; }
-  .upload-area p { color: #aaa; font-size: 0.9rem; margin-top: 8px; }
-  .url-input-wrap {
     max-width: 600px;
     margin: 0 auto 24px;
-    display: flex;
-    gap: 8px;
+    transition: all 0.2s;
   }
-  .url-input-wrap input {
-    flex: 1;
-    padding: 10px 14px;
-    border: 1.5px solid #f0a0b0;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    outline: none;
-  }
-  .url-input-wrap button {
-    padding: 10px 18px;
-    background: #e05c7a;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 0.9rem;
-  }
+  .upload-area:hover { background: #f5f5f5; border-color: #bbb; }
+  .upload-area p { color: #aaa; font-size: 0.9rem; margin-top: 8px; }
   .btn {
     display: block;
     margin: 0 auto 12px;
-    padding: 12px 32px;
-    background: #e05c7a;
+    padding: 14px 32px;
+    background: #222;
     color: white;
     border: none;
     border-radius: 12px;
     font-size: 1rem;
+    font-family: 'Noto Sans KR', sans-serif;
     cursor: pointer;
     max-width: 600px;
     width: 100%;
     transition: background 0.2s;
+    letter-spacing: -0.3px;
   }
-  .btn:hover { background: #c94a68; }
-  .btn:disabled { background: #ddd; cursor: not-allowed; }
-  .btn-outline {
-    background: white;
-    color: #e05c7a;
-    border: 2px solid #e05c7a;
-  }
-  .btn-outline:hover { background: #fff0f3; }
+  .btn:hover { background: #444; }
+  .btn:disabled { background: #ddd; color: #aaa; cursor: not-allowed; }
   .status {
     text-align: center;
-    color: #e05c7a;
+    color: #666;
     font-size: 0.9rem;
     margin: 12px 0;
     min-height: 20px;
   }
   .results-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
     max-width: 1200px;
-    margin: 24px auto 0;
+    margin: 32px auto 0;
   }
   .result-card {
     background: white;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    width: 320px;
   }
-  .result-card canvas {
+  .result-card canvas { width: 100%; display: block; }
+  .card-actions { padding: 10px 12px; }
+  .btn-download {
     width: 100%;
-    display: block;
-  }
-  .card-actions {
-    padding: 10px 12px;
-    display: flex;
-    gap: 8px;
-  }
-  .card-actions button {
-    flex: 1;
-    padding: 8px;
+    padding: 9px;
     border-radius: 8px;
     border: none;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    font-family: 'Noto Sans KR', sans-serif;
     cursor: pointer;
+    background: #222;
+    color: white;
+    transition: background 0.2s;
   }
-  .btn-download { background: #e05c7a; color: white; }
-  .btn-download:hover { background: #c94a68; }
+  .btn-download:hover { background: #444; }
   .excel-btn {
     display: block;
-    margin: 16px auto 0;
-    padding: 12px 32px;
+    margin: 24px auto 40px;
+    padding: 14px 32px;
     background: #2e7d32;
     color: white;
     border: none;
     border-radius: 12px;
     font-size: 1rem;
+    font-family: 'Noto Sans KR', sans-serif;
     cursor: pointer;
     max-width: 600px;
     width: 100%;
+    transition: background 0.2s;
   }
   .excel-btn:hover { background: #1b5e20; }
   #preview-img {
     max-width: 100%;
-    max-height: 200px;
+    max-height: 180px;
     display: block;
-    margin: 8px auto 0;
+    margin: 12px auto 0;
     border-radius: 8px;
   }
 </style>
 </head>
 <body>
 
-<h1>🌸 스탬프 번역기</h1>
+<h1>스탬프 번역기</h1>
 <p class="subtitle">일본어 스탬프 이미지를 업로드하면 한국어 번역을 병기해드려요</p>
 
 <div class="upload-area" id="dropZone">
@@ -158,18 +134,12 @@
   <img id="preview-img" style="display:none">
 </div>
 
-<div class="url-input-wrap">
-  <input type="text" id="urlInput" placeholder="또는 이미지 URL을 붙여넣으세요">
-  <button onclick="loadFromUrl()">불러오기</button>
-</div>
-
 <button class="btn" id="translateBtn" onclick="startTranslation()" disabled>
-  ✨ 번역 시작
+  번역 시작
 </button>
 
 <div class="status" id="status"></div>
 <div class="results-grid" id="resultsGrid"></div>
-
 <button class="excel-btn" id="excelBtn" onclick="downloadExcel()" style="display:none">
   📊 엑셀로 번역 목록 다운로드
 </button>
@@ -180,16 +150,15 @@ const WORKER_URL = "https://stamp-translator-api.90521.workers.dev";
 let loadedFiles = [];
 let translationData = [];
 
-// 드래그 앤 드롭
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 
 dropZone.addEventListener('click', () => fileInput.click());
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.background = '#fff0f3'; });
-dropZone.addEventListener('dragleave', () => dropZone.style.background = 'white');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.background = '#f5f5f5'; });
+dropZone.addEventListener('dragleave', () => dropZone.style.background = '#fafafa');
 dropZone.addEventListener('drop', e => {
   e.preventDefault();
-  dropZone.style.background = 'white';
+  dropZone.style.background = '#fafafa';
   handleFiles(Array.from(e.dataTransfer.files));
 });
 fileInput.addEventListener('change', e => handleFiles(Array.from(e.target.files)));
@@ -197,7 +166,7 @@ fileInput.addEventListener('change', e => handleFiles(Array.from(e.target.files)
 function handleFiles(files) {
   loadedFiles = files.filter(f => f.type.startsWith('image/'));
   if (loadedFiles.length > 0) {
-    document.getElementById('status').textContent = `${loadedFiles.length}개 이미지 로드됨`;
+    setStatus(`${loadedFiles.length}개 이미지 로드됨`);
     document.getElementById('translateBtn').disabled = false;
     if (loadedFiles.length === 1) {
       const reader = new FileReader();
@@ -208,23 +177,6 @@ function handleFiles(files) {
       };
       reader.readAsDataURL(loadedFiles[0]);
     }
-  }
-}
-
-async function loadFromUrl() {
-  const url = document.getElementById('urlInput').value.trim();
-  if (!url) return;
-  setStatus('이미지 불러오는 중...');
-  try {
-    const res = await fetch(url);
-    const blob = await res.blob();
-    const file = new File([blob], 'stamp.png', { type: blob.type });
-    handleFiles([file]);
-    const img = document.getElementById('preview-img');
-    img.src = url;
-    img.style.display = 'block';
-  } catch {
-    setStatus('❌ URL에서 이미지를 불러올 수 없어요. 직접 업로드해주세요.');
   }
 }
 
@@ -240,17 +192,14 @@ async function startTranslation() {
   }
 
   setStatus('✅ 번역 완료!');
-  if (translationData.length > 0) {
-    document.getElementById('excelBtn').style.display = 'block';
-  }
+  if (translationData.length > 0) document.getElementById('excelBtn').style.display = 'block';
   document.getElementById('translateBtn').disabled = false;
 }
 
-async function processImage(file, index) {
+async function processImage(file, fileIndex) {
   const base64 = await fileToBase64(file);
   const pureBase64 = base64.split(',')[1];
 
-  // OCR
   const ocrRes = await fetch(`${WORKER_URL}/ocr`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -260,15 +209,18 @@ async function processImage(file, index) {
   const annotations = ocrData.responses?.[0]?.textAnnotations || [];
 
   if (annotations.length === 0) {
-    setStatus(`⚠️ ${file.name}: 텍스트를 찾지 못했어요`);
+    setStatus(`⚠️ 텍스트를 찾지 못했어요`);
     return;
   }
 
-  // 첫 번째 항목은 전체 텍스트, 이후부터 개별 단어
-  const blocks = annotations.slice(1);
-  const texts = blocks.map(b => b.description);
+  // 전체 텍스트 블록 단위로 처리 (분절 방지)
+  // annotations[0] = 전체 인식 텍스트
+  // annotations[1~] = 개별 단어 → 인접한 것끼리 묶어서 스탬프 단위로 그룹화
+  const blocks = groupTextBlocks(annotations.slice(1), file);
+  const texts = blocks.map(b => b.text);
 
-  // 번역
+  if (texts.length === 0) return;
+
   const transRes = await fetch(`${WORKER_URL}/translate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -277,18 +229,77 @@ async function processImage(file, index) {
   const transData = await transRes.json();
   const translations = transData.data?.translations || [];
 
-  // 엑셀 데이터 저장
+  // 엑셀: 좌상단부터 번호 순서로
   blocks.forEach((block, i) => {
     translationData.push({
-      파일명: file.name,
-      일본어: block.description,
+      번호: translationData.length + 1,
+      일본어: block.text,
       한국어: translations[i]?.translatedText || '',
     });
   });
 
-  // Canvas에 병기
   const canvas = await drawOverlay(file, blocks, translations);
-  renderCard(canvas, file.name, index);
+  renderCard(canvas, fileIndex);
+}
+
+// 인접한 텍스트 블록을 그룹화해서 하나의 문장으로 합치기
+function groupTextBlocks(annotations, file) {
+  if (annotations.length === 0) return [];
+
+  // 이미지 크기 기준으로 근접 임계값 설정
+  const groups = [];
+  const used = new Set();
+
+  // bounding box 중심점 계산
+  const getCenterY = (ann) => {
+    const verts = ann.boundingPoly.vertices;
+    return ((verts[0].y || 0) + (verts[2].y || 0)) / 2;
+  };
+  const getCenterX = (ann) => {
+    const verts = ann.boundingPoly.vertices;
+    return ((verts[0].x || 0) + (verts[1].x || 0)) / 2;
+  };
+  const getHeight = (ann) => {
+    const verts = ann.boundingPoly.vertices;
+    return Math.abs((verts[2].y || 0) - (verts[0].y || 0));
+  };
+
+  for (let i = 0; i < annotations.length; i++) {
+    if (used.has(i)) continue;
+    const group = [i];
+    used.add(i);
+
+    const baseH = getHeight(annotations[i]);
+    const threshold = baseH * 3;
+
+    for (let j = i + 1; j < annotations.length; j++) {
+      if (used.has(j)) continue;
+      const dy = Math.abs(getCenterY(annotations[i]) - getCenterY(annotations[j]));
+      const dx = Math.abs(getCenterX(annotations[i]) - getCenterX(annotations[j]));
+      if (dy < threshold && dx < threshold * 4) {
+        group.push(j);
+        used.add(j);
+      }
+    }
+
+    // 그룹 내 텍스트 합치기
+    const text = group.map(idx => annotations[idx].description).join('');
+
+    // 그룹 전체 bounding box
+    const allVerts = group.flatMap(idx => annotations[idx].boundingPoly.vertices);
+    const xs = allVerts.map(v => v.x || 0);
+    const ys = allVerts.map(v => v.y || 0);
+    const minX = Math.min(...xs);
+    const minY = Math.min(...ys);
+    const maxX = Math.max(...xs);
+    const maxY = Math.max(...ys);
+
+    groups.push({ text, minX, minY, maxX, maxY });
+  }
+
+  // 좌상단 기준 정렬 (위→아래, 좌→우)
+  groups.sort((a, b) => a.minY - b.minY || a.minX - b.minX);
+  return groups;
 }
 
 async function drawOverlay(file, blocks, translations) {
@@ -302,21 +313,20 @@ async function drawOverlay(file, blocks, translations) {
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0);
 
-      blocks.forEach((block, i) => {
-        const verts = block.boundingPoly.vertices;
-        const x = verts[0].x || 0;
-        const y = verts[0].y || 0;
-        const w = (verts[1].x || 0) - x;
-        const h = (verts[2].y || 0) - (verts[0].y || 0);
-        const fontSize = Math.max(Math.min(h * 0.75, w / 2), 10);
-        const korean = translations[i]?.translatedText || '';
+      const FONT_SIZE = Math.max(img.width * 0.022, 14); // 이미지 크기 기준 통일된 폰트 크기
 
-        ctx.font = `bold ${fontSize}px 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif`;
-        ctx.fillStyle = 'red';
+      blocks.forEach((block, i) => {
+        const korean = translations[i]?.translatedText || '';
+        if (!korean) return;
+
+        ctx.font = `bold ${FONT_SIZE}px 'Noto Sans KR', sans-serif`;
         ctx.strokeStyle = 'white';
-        ctx.lineWidth = fontSize * 0.15;
-        ctx.strokeText(korean, x, y);
-        ctx.fillText(korean, x, y);
+        ctx.lineWidth = FONT_SIZE * 0.3;
+        ctx.lineJoin = 'round';
+        ctx.fillStyle = 'red';
+
+        ctx.strokeText(korean, block.minX, block.minY - 4);
+        ctx.fillText(korean, block.minX, block.minY - 4);
       });
 
       URL.revokeObjectURL(url);
@@ -326,7 +336,7 @@ async function drawOverlay(file, blocks, translations) {
   });
 }
 
-function renderCard(canvas, filename, index) {
+function renderCard(canvas, index) {
   const grid = document.getElementById('resultsGrid');
   const card = document.createElement('div');
   card.className = 'result-card';
@@ -334,17 +344,15 @@ function renderCard(canvas, filename, index) {
 
   const actions = document.createElement('div');
   actions.className = 'card-actions';
-
   const dlBtn = document.createElement('button');
   dlBtn.className = 'btn-download';
   dlBtn.textContent = '⬇️ 이미지 저장';
   dlBtn.onclick = () => {
     const a = document.createElement('a');
-    a.download = `translated_${filename}`;
+    a.download = `translated_${index + 1}.png`;
     a.href = canvas.toDataURL('image/png');
     a.click();
   };
-
   actions.appendChild(dlBtn);
   card.appendChild(actions);
   grid.appendChild(card);
@@ -353,7 +361,7 @@ function renderCard(canvas, filename, index) {
 function downloadExcel() {
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.json_to_sheet(translationData);
-  ws['!cols'] = [{ wch: 20 }, { wch: 30 }, { wch: 30 }];
+  ws['!cols'] = [{ wch: 8 }, { wch: 35 }, { wch: 35 }];
   XLSX.utils.book_append_sheet(wb, ws, '번역목록');
   XLSX.writeFile(wb, 'stamp_translations.xlsx');
 }
