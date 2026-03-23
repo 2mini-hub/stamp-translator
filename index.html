@@ -40,17 +40,9 @@
   .btn:hover { background: #444; }
   .btn:disabled { background: #ddd; color: #aaa; cursor: not-allowed; }
   .status { text-align: center; color: #666; font-size: 0.9rem; margin: 12px 0; min-height: 20px; }
-  .result-wrap {
-    max-width: 900px; margin: 32px auto 0; text-align: center;
-  }
-  .result-wrap canvas {
-    max-width: 100%; border-radius: 12px;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-  }
-  .bottom-btns {
-    max-width: 600px; margin: 24px auto 40px;
-    display: flex; flex-direction: column; gap: 10px;
-  }
+  .result-wrap { max-width: 900px; margin: 32px auto 0; text-align: center; }
+  .result-wrap canvas { max-width: 100%; border-radius: 12px; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+  .bottom-btns { max-width: 600px; margin: 24px auto 40px; display: flex; flex-direction: column; gap: 10px; }
   .btn-save {
     padding: 14px 32px; background: #1565c0; color: white; border: none;
     border-radius: 12px; font-size: 1rem; font-family: 'Noto Sans KR', sans-serif;
@@ -63,10 +55,7 @@
     cursor: pointer; width: 100%; transition: background 0.2s;
   }
   .excel-btn:hover { background: #1b5e20; }
-  #preview-img {
-    max-width: 100%; max-height: 180px; display: block;
-    margin: 12px auto 0; border-radius: 8px;
-  }
+  #preview-img { max-width: 100%; max-height: 180px; display: block; margin: 12px auto 0; border-radius: 8px; }
 </style>
 </head>
 <body>
@@ -105,7 +94,6 @@
 <script>
 const WORKER_URL = "https://stamp-translator-api.90521.workers.dev";
 let translationData = [];
-let mergedCanvas = null;
 
 document.getElementById('colCount').addEventListener('input', updateTotal);
 document.getElementById('rowCount').addEventListener('input', updateTotal);
@@ -144,8 +132,10 @@ function handleFiles(files) {
 async function startTranslation() {
   const files = window._loadedFiles;
   if (!files || files.length === 0) return;
+
   const cols = parseInt(document.getElementById('colCount').value) || 4;
   const rows = parseInt(document.getElementById('rowCount').value) || 6;
+  const LABEL_HEIGHT = 52; // 번역 텍스트 공간 높이
 
   document.getElementById('translateBtn').disabled = true;
   document.getElementById('resultWrap').style.display = 'none';
@@ -157,12 +147,15 @@ async function startTranslation() {
   const cellW = Math.floor(img.width / cols);
   const cellH = Math.floor(img.height / rows);
 
-  // 결과 합성 캔버스 (원본 크기)
+  // 출력 캔버스: 각 셀 아래에 라벨 공간 추가
   const output = document.getElementById('mergedCanvas');
   output.width = img.width;
-  output.height = img.height;
+  output.height = rows * (cellH + LABEL_HEIGHT);
   const outCtx = output.getContext('2d');
-  outCtx.drawImage(img, 0, 0); // 원본 먼저 그리기
+
+  // 배경 흰색
+  outCtx.fillStyle = '#ffffff';
+  outCtx.fillRect(0, 0, output.width, output.height);
 
   let stampIndex = 0;
   for (let r = 0; r < rows; r++) {
@@ -170,18 +163,31 @@ async function startTranslation() {
       stampIndex++;
       setStatus(`번역 중... (${stampIndex}/${cols * rows})`);
 
-      // 셀 잘라내기
-      const cellCanvas = document.createElement('canvas');
-      cellCanvas.width = cellW;
-      cellCanvas.height = cellH;
-      const cellCtx = cellCanvas.getContext('2d');
-      cellCtx.drawImage(img, c * cellW, r * cellH, cellW, cellH, 0, 0, cellW, cellH);
+      const srcX = c * cellW;
+      const srcY = r * cellH;
+      const dstX = c * cellW;
+      const dstY = r * (cellH + LABEL_HEIGHT);
 
-      // 전처리: 대비 강화
+      // 원본 스탬프 이미지 그리기
+      outCtx.drawImage(img, srcX, srcY, cellW, cellH, dstX, dstY, cellW, cellH);
+
+      // 셀 경계선 (연하게)
+      outCtx.strokeStyle = '#eeeeee';
+      outCtx.lineWidth = 1;
+      outCtx.strokeRect(dstX, dstY, cellW, cellH + LABEL_HEIGHT);
+
+      // 라벨 영역 배경
+      outCtx.fillStyle = '#f9f9f9';
+      outCtx.fillRect(dstX, dstY + cellH, cellW, LABEL_HEIGHT);
+
+      // OCR
+      const cellCanvas = document.createElement('canvas');
+      cellCanvas.width = cellW; cellCanvas.height = cellH;
+      const cellCtx = cellCanvas.getContext('2d');
+      cellCtx.drawImage(img, srcX, srcY, cellW, cellH, 0, 0, cellW, cellH);
       const processed = preprocessImage(cellCanvas);
       const base64 = processed.toDataURL('image/png').split(',')[1];
 
-      // OCR
       let fullText = '';
       try {
         const ocrRes = await fetch(`${WORKER_URL}/ocr`, {
@@ -191,7 +197,7 @@ async function startTranslation() {
         const ocrData = await ocrRes.json();
         const annotations = ocrData.responses?.[0]?.textAnnotations || [];
         fullText = annotations[0]?.description?.replace(/\n/g, '').trim() || '';
-      } catch (e) { console.error('OCR 오류', e); }
+      } catch(e) { console.error('OCR 오류', e); }
 
       // 번역
       let korean = '';
@@ -203,62 +209,56 @@ async function startTranslation() {
           });
           const transData = await transRes.json();
           korean = transData.data?.translations?.[0]?.translatedText || '';
-        } catch (e) { console.error('번역 오류', e); }
+        } catch(e) { console.error('번역 오류', e); }
       }
 
       translationData.push({ 번호: stampIndex, 일본어: fullText || '(텍스트 없음)', 한국어: korean || '' });
 
-      // 원본 합성 캔버스 위에 번역 텍스트 오버레이
-      if (korean) {
-        const offsetX = c * cellW;
-        const offsetY = r * cellH;
-        const fontSize = Math.max(cellW * 0.07, 13);
-        outCtx.font = `bold ${fontSize}px 'Noto Sans KR', sans-serif`;
-        outCtx.lineJoin = 'round';
-        outCtx.lineWidth = fontSize * 0.35;
-        outCtx.strokeStyle = 'white';
-        outCtx.fillStyle = 'red';
+      // 라벨 영역에 번역 텍스트 그리기
+      const labelY = dstY + cellH;
+      const fontSize = Math.max(cellW * 0.065, 12);
+      outCtx.font = `bold ${fontSize}px 'Noto Sans KR', sans-serif`;
+      outCtx.textBaseline = 'middle';
 
-        const lines = wrapText(outCtx, korean, cellW - 10, fontSize);
+      if (korean) {
+        // 텍스트 줄바꿈 처리
+        const lines = wrapText(outCtx, korean, cellW - 12, fontSize);
+        const lineH = fontSize + 3;
+        const totalH = lines.length * lineH;
+        const startY = labelY + (LABEL_HEIGHT - totalH) / 2 + fontSize / 2;
+
+        outCtx.fillStyle = '#cc0000';
         lines.forEach((line, li) => {
-          const x = offsetX + 5;
-          const y = offsetY + fontSize + li * (fontSize + 2) + 4;
-          outCtx.strokeText(line, x, y);
-          outCtx.fillText(line, x, y);
+          outCtx.fillText(line, dstX + 6, startY + li * lineH);
         });
+      } else {
+        // 번역 없음 표시
+        outCtx.fillStyle = '#cccccc';
+        outCtx.font = `${fontSize * 0.85}px 'Noto Sans KR', sans-serif`;
+        outCtx.fillText('(텍스트 없음)', dstX + 6, labelY + LABEL_HEIGHT / 2);
       }
 
+      outCtx.textBaseline = 'alphabetic';
       await new Promise(r => setTimeout(r, 100));
     }
   }
 
-  // 결과 표시
   document.getElementById('resultWrap').style.display = 'block';
   document.getElementById('bottomBtns').style.display = 'flex';
   setStatus('✅ 번역 완료!');
   document.getElementById('translateBtn').disabled = false;
 }
 
-// 이미지 전처리: 대비 강화 + 선명도 향상
 function preprocessImage(canvas) {
-  const w = canvas.width;
-  const h = canvas.height;
-  const out = document.createElement('canvas');
-  out.width = w; out.height = h;
-  const ctx = out.getContext('2d');
-
-  // 2배 업스케일 (작은 텍스트 인식률 향상)
   const scaled = document.createElement('canvas');
-  scaled.width = w * 2; scaled.height = h * 2;
-  const sCtx = scaled.getContext('2d');
-  sCtx.imageSmoothingEnabled = false;
-  sCtx.drawImage(canvas, 0, 0, w * 2, h * 2);
-
-  // 대비 강화 필터
-  sCtx.filter = 'contrast(1.4) brightness(1.05)';
-  sCtx.drawImage(scaled, 0, 0);
-  sCtx.filter = 'none';
-
+  scaled.width = canvas.width * 2;
+  scaled.height = canvas.height * 2;
+  const ctx = scaled.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(canvas, 0, 0, scaled.width, scaled.height);
+  ctx.filter = 'contrast(1.4) brightness(1.05)';
+  ctx.drawImage(scaled, 0, 0);
+  ctx.filter = 'none';
   return scaled;
 }
 
